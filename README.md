@@ -1,5 +1,4 @@
-# Vamos gerar o conteúdo do arquivo README.md de forma muito polida, organizada e profissional, pronto para o GitHub.
-readme_content = """# 🌐 ESP32 Web Server IoT - Controle de LED Remoto
+# 🌐 ESP32 Web Server IoT - Controle de LED Remoto
 
 Este é um projeto de estudo de Internet das Coisas (IoT) desenvolvido para a placa **ESP32**. O objetivo é criar um servidor web básico hospedado nativamente no microcontrolador, permitindo que qualquer dispositivo (como um smartphone ou computador) conectado à mesma rede Wi-Fi controle o estado de um LED físico por meio de uma interface gráfica HTML simples.
 
@@ -66,98 +65,9 @@ Conecte sua placa ao computador através de um cabo USB de dados de boa qualidad
 
 Selecione a porta de comunicação correspondente em Ferramentas > Porta.
 
-Copie o código fonte fornecido abaixo, substitua as credenciais do Wi-Fi e clique no botão Carregar (Seta para a direita).
+Copie o código fonte fornecido 'esp32.ino', substitua as credenciais do Wi-Fi e clique no botão Carregar (Seta para a direita).
 
-📝 Código Fonte (.ino)
-C++
-#include <WiFi.h>
-#include <WebServer.h>
 
-// Substitua com as credenciais da sua rede Wi-Fi local
-const char* ssid     = "TESTEIOT";
-const char* password = "TESTEIOT";
-
-// O LED externo/interno está mapeado no pino GPIO 2
-const int ledPin = 2;
-
-// Inicializa o servidor web na porta padrão HTTP (80)
-WebServer server(80);
-
-// Função responsável por gerar e enviar a página HTML para o cliente
-void handleRoot() {
-  String html = "<!DOCTYPE html><html>";
-  html += "<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
-  html += "<link rel=\"icon\" href=\"data:,\">";
-  html += "<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}";
-  html += ".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;";
-  html += "text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}";
-  html += ".button2 {background-color: #555555;}</style></head>";
-  
-  html += "<body><h1>Controle do LED - ESP32</h1>";
-  html += "<p>Placa do Helder conectada!</p>";
-  
-  // Botões de comando estruturados em requisições GET por URL
-  html += "<p><a href=\"/led/on\"><button class=\"button\">LIGAR</button></a></p>";
-  html += "<p><a href=\"/led/off\"><button class=\"button button2\">DESLIGAR</button></a></p>";
-  
-  html += "</body></html>";
-  
-  server.send(200, "text/html", html);
-}
-
-// Função executada ao acessar a rota "/led/on"
-void handleLedOn() {
-  digitalWrite(ledPin, HIGH);
-  server.sendHeader("Location", "/");
-  server.send(303); // Redireciona o navegador de volta à raiz
-}
-
-// Função executada ao acessar a rota "/led/off"
-void handleLedOff() {
-  digitalWrite(ledPin, LOW);
-  server.sendHeader("Location", "/");
-  server.send(303); // Redireciona o navegador de volta à raiz
-}
-
-void setup() {
-  // Inicialização da comunicação Serial para debug
-  Serial.begin(115200);
-  
-  // Configuração do pino do LED como saída digital
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW); // Garante que o LED inicie desligado
-
-  // Inicializa o processo de conexão Wi-Fi
-  Serial.print("Conectando em: ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-
-  // Aguarda até que a conexão seja estabelecida de fato
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  // Exibe informações de rede obtidas no Monitor Serial
-  Serial.println("");
-  Serial.println("Wi-Fi conectado!");
-  Serial.print("IP do ESP32: ");
-  Serial.println(WiFi.localIP());
-
-  // Mapeamento de rotas (endpoints) do Servidor Web
-  server.on("/", handleRoot);
-  server.on("/led/on", handleLedOn);
-  server.on("/led/off", handleLedOff);
-
-  // Ativa e inicia o servidor HTTP
-  server.begin();
-  Serial.println("Servidor Web iniciado.");
-}
-
-void loop() {
-  // Executa continuamente a escuta de novas conexões e requisições HTTP
-  server.handleClient();
-}
 🕹️ Como Testar e Operar
 Abra o Monitor Serial na Arduino IDE e defina o Baud Rate para 115200.
 
